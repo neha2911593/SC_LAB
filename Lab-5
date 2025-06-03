@@ -1,0 +1,27 @@
+#Ant Colony Optimization
+import numpy as np
+
+dist = np.array([[np.inf,2,9,8],[1,np.inf,6,6],[15,7,np.inf,14],[13,6,9,np.inf]])
+pher = np.ones_like(dist)
+best_path, best_cost = None, float('inf')
+
+for _ in range(20):
+    path = [0]
+    nodes = {1,2,3}
+    while nodes:
+        cur = path[-1]
+        probs = [(pher[cur,j])*(1/dist[cur,j]) for j in nodes]
+        probs = np.array(probs)/sum(probs)
+        nxt = np.random.choice(list(nodes), p=probs)
+        path.append(nxt)
+        nodes.remove(nxt)
+    path.append(0)
+    cost = sum(dist[path[i],path[i+1]] for i in range(len(path)-1))
+    if cost < best_cost:
+        best_cost, best_path = cost, path
+    pher *= 0.5
+    for i in range(len(path)-1):
+        pher[path[i], path[i+1]] += 100/cost
+
+print("Best path:", best_path)
+print("Min cost:", best_cost)
