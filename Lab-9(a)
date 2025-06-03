@@ -1,0 +1,29 @@
+#Perceptron Hebb's Rule
+import numpy as np
+
+# Inputs (4 samples, 2 features)
+X = np.array([[0,0], [0,1], [1,0], [1,1]])
+# Targets (AND logic)
+y = np.array([0, 0, 0, 1])
+
+# Initialize weights and bias
+w = np.zeros(2)
+b = 0
+
+def activation(x):
+    return 1 if x > 0 else 0
+
+epochs = 5
+
+for epoch in range(epochs):
+    for xi, target in zip(X, y):
+        output = activation(np.dot(w, xi) + b)
+        error = target - output
+        # Hebb's Rule update only if target is 1 (reinforcement)
+        if target == 1:
+            w += xi
+            b += 1
+    print(f"Epoch {epoch+1}: Weights = {w}, Bias = {b}")
+
+print("\nFinal Weights:", w)
+print("Final Bias:", b)
