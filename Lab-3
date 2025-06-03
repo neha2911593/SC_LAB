@@ -1,0 +1,38 @@
+#Genetic Algorithm
+import random
+
+POP_SIZE = 6
+GENES = 5
+GENERATIONS = 10
+
+def fitness(ind):
+    x = int(ind, 2)
+    return x * x
+
+def select(pop):
+    return sorted(pop, key=fitness, reverse=True)[:2]
+
+def crossover(p1, p2):
+    point = random.randint(1, GENES-1)
+    return p1[:point] + p2[point:], p2[:point] + p1[point:]
+
+def mutate(ind):
+    i = random.randint(0, GENES-1)
+    return ind[:i] + str(1 - int(ind[i])) + ind[i+1:]
+
+pop = [''.join(random.choice('01') for _ in range(GENES)) for _ in range(POP_SIZE)]
+
+for gen in range(1, GENERATIONS + 1):
+    parents = select(pop)
+    offspring = []
+    while len(offspring) < POP_SIZE:
+        c1, c2 = crossover(*parents)
+        offspring += [mutate(c1), mutate(c2)]
+    pop = offspring[:POP_SIZE]
+
+    if gen % 2 == 0:  # print every 2 generations
+        best = max(pop, key=fitness)
+        print(f"Generation {gen}: Best individual = {best}, x = {int(best,2)}, fitness = {fitness(best)}")
+
+best = max(pop, key=fitness)
+print("\nFinal Best individual:", best, "| x =", int(best, 2), "| f(x) =", fitness(best))
